@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.a21buttons.stickyheaders.StickyHeaderAdapter
 import com.a21buttons.stickyheaders.StickyHeaderLayoutManager
 
 class MainActivity : AppCompatActivity() {
@@ -21,16 +22,18 @@ class MainActivity : AppCompatActivity() {
     recyclerView.adapter = Adapter(layoutInflater)
   }
 
-  class Adapter(val inflater: LayoutInflater) : RecyclerView.Adapter<Adapter.ViewHolder>() {
+  class Adapter(val inflater: LayoutInflater) : StickyHeaderAdapter<Adapter.ViewHolder>() {
     override fun getItemCount(): Int = 100
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
       return ViewHolder(inflater.inflate(R.layout.item, parent, false))
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-      holder.bind("Position $position")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, sectionId: Long) {
+      holder.bind("Position $position\tSection $sectionId")
     }
+
+    override fun getSectionId(position: Int) = (position / 2).toLong()
 
     class ViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
       fun bind(s: String) {

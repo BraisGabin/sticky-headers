@@ -15,6 +15,9 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
   override fun onAdapterChanged(oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?) {
     removeAllViews()
+    if (newAdapter !is StickyHeaderAdapter?) {
+      throw IllegalArgumentException("The adapter must extend com.a21buttons.stickyheaders.StickyHeaderAdapter")
+    }
   }
 
   override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
@@ -132,8 +135,16 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return getLayoutParams(view).viewAdapterPosition
   }
 
+  private fun getSectionId(view: View): Long {
+    return getTag(view).sectionId
+  }
+
   private fun getLayoutParams(view: View): LayoutParams {
     return view.layoutParams as LayoutParams
+  }
+
+  private fun getTag(view: View): StickyHeaderData {
+    return view.getTag(R.id.com_a21buttons_stickyheaders_tag) as StickyHeaderData
   }
 
   override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
