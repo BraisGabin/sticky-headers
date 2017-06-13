@@ -3,6 +3,7 @@ package com.a21buttons.stickyheaders
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 
@@ -10,6 +11,7 @@ import java.lang.Math.max
 import java.lang.Math.min
 
 class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
+  private val viewCache = SparseArray<View>()
 
   override fun onAdapterChanged(oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?) {
     removeAllViews()
@@ -24,8 +26,8 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     var i = 0
 
     while (top < totalHeight && i < itemCount) {
-      val view = createView(recycler, i)
-      addMeasureLayoutToBottom(view, top)
+      val view = createView(recycler, i, childCount)
+      layoutToBottom(view, top)
       top += view.height
       i++
     }
@@ -58,8 +60,8 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         }
         if (scrolled > dy && topPosition > 0) {
           topPosition--
-          topView = createView(recycler, topPosition)
-          addMeasureLayoutToTop(topView, 0)
+          topView = createView(recycler, topPosition, 0)
+          layoutToTop(topView, 0)
         } else if (scroll == 0) {
           break
         }
@@ -78,8 +80,8 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         }
         if (scrolled < dy && bottomPosition + 1 < itemCount) {
           bottomPosition++
-          bottomView = createView(recycler, bottomPosition)
-          addMeasureLayoutToBottom(bottomView, height)
+          bottomView = createView(recycler, bottomPosition, childCount)
+          layoutToBottom(bottomView, height)
         } else if (scroll == 0) {
           break
         }
@@ -97,24 +99,21 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return getChildAt(childCount - 1 - position)
   }
 
-  private fun createView(recycler: RecyclerView.Recycler, position: Int): View {
-    return recycler.getViewForPosition(position)
-  }
-
-  private fun addMeasureLayoutToTop(view: View, bottom: Int) {
-    addView(view, 0)
-    measure(view)
-    layoutToTop(view, bottom)
-  }
-
-  private fun addMeasureLayoutToBottom(view: View, top: Int) {
-    addView(view)
-    measure(view)
-    layoutToBottom(view, top)
-  }
-
-  private fun measure(view: View) {
-    measureChildWithMargins(view, 0, 0)
+  /**
+   *
+   * @param childPosition [0..childCount]
+   */
+  private fun createView(recycler: RecyclerView.Recycler, adapterPosition: Int, childPosition: Int): View {
+    var view: View? = viewCache[adapterPosition]
+    if (view != null) {
+      viewCache.delete(adapterPosition)
+      attachView(view, childPosition)
+    } else {
+      view = recycler.getViewForPosition(adapterPosition)!!
+      addView(view, childPosition)
+      measureChildWithMargins(view, 0, 0)
+    }
+    return view
   }
 
   private fun layoutToTop(view: View, bottom: Int) {
