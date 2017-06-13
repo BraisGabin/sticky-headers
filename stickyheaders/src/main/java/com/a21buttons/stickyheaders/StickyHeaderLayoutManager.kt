@@ -12,11 +12,16 @@ import java.lang.Math.min
 
 class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   private val viewCache = SparseArray<View>()
+  private var stickyHeader: HeaderLookup = HeaderLookupPlaceholder
 
   override fun onAdapterChanged(oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?) {
     removeAllViews()
     if (newAdapter !is StickyHeaderAdapter?) {
       throw IllegalArgumentException("The adapter must extend com.a21buttons.stickyheaders.StickyHeaderAdapter")
+    } else if (newAdapter != null) {
+      stickyHeader = newAdapter
+    } else {
+      stickyHeader = HeaderLookupPlaceholder
     }
   }
 
@@ -44,6 +49,8 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     if (childCount == 0 || dy == 0) {
       return 0
     }
+
+    removeHeaders()
 
     val height = height
 
@@ -91,7 +98,72 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       }
     }
 
+    addHeaders(recycler)
+    recycleUnusedViews(recycler)
+
     return scrolled
+  }
+
+  private fun removeHeaders() {
+    for (i in childCount - 1 downTo 0) {
+      val view = getChildAt(i)
+      if (isStickyHeader(view)) {
+        detachView(view)
+        setStickyHeader(view, false)
+        val bottom = getChildAt(0).top
+        if (bottom > 0) {
+          attachView(view, 0)
+          layoutToTop(view, bottom)
+        } else {
+          viewCache.put(getAdapterPosition(view), view)
+        }
+      } else {
+        break
+      }
+    }
+  }
+
+  private fun addHeaders(recycler: RecyclerView.Recycler) {
+    val topView = getTopView()
+    val topSectionId = getSectionId(topView)
+    val headerAdapterPosition = stickyHeader.getHeaderPosition(topSectionId)
+    if (headerAdapterPosition >= 0) {
+      if (headerAdapterPosition == getAdapterPosition(topView)) {
+        if (topView.top < 0 && topView.bottom < height) {
+          detachView(topView)
+          attachView(topView)
+          setStickyHeader(topView, true)
+          layoutToTop(topView, calculateSpace(topView.height, topSectionId))
+        }
+      } else {
+        val header = createView(recycler, headerAdapterPosition, childCount)
+        setStickyHeader(header, true)
+        layoutToTop(header, calculateSpace(header.height, topSectionId))
+      }
+    }
+  }
+
+  private fun recycleUnusedViews(recycler: RecyclerView.Recycler) {
+    for (i in 0..viewCache.size() - 1) {
+      recycler.recycleView(viewCache.valueAt(i))
+    }
+    viewCache.clear()
+  }
+
+  private fun calculateSpace(headerHeight: Int, sectionId: Long): Int {
+    var space = 0
+    for (i in 0..childCount - 1) {
+      val view = getTopView(i)
+      if (getSectionId(view) == sectionId) {
+        space = min(view.bottom, headerHeight)
+        if (space >= headerHeight) {
+          break
+        }
+      } else {
+        break
+      }
+    }
+    return min(space, height)
   }
 
   private fun getTopView(position: Int = 0): View {
@@ -116,6 +188,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       addView(view, childPosition)
       measureChildWithMargins(view, 0, 0)
     }
+    getLayoutParams(view).stickyHeader = false
     return view
   }
 
@@ -137,6 +210,14 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
   private fun getSectionId(view: View): Long {
     return getTag(view).sectionId
+  }
+
+  private fun isStickyHeader(view: View): Boolean {
+    return getLayoutParams(view).stickyHeader
+  }
+
+  private fun setStickyHeader(view: View, stickyHeader: Boolean) {
+    getLayoutParams(view).stickyHeader = stickyHeader
   }
 
   private fun getLayoutParams(view: View): LayoutParams {
@@ -164,11 +245,22 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   }
 
   class LayoutParams : RecyclerView.LayoutParams {
+    var stickyHeader: Boolean = false
 
     constructor(lp: ViewGroup.LayoutParams) : super(lp)
 
     constructor(c: Context, attrs: AttributeSet) : super(c, attrs)
 
     constructor(width: Int, height: Int) : super(width, height)
+  }
+
+  interface HeaderLookup {
+    fun getHeaderPosition(sectionId: Long): Int
+  }
+
+  object HeaderLookupPlaceholder : HeaderLookup {
+    override fun getHeaderPosition(sectionId: Long): Int {
+      throw IllegalStateException("Please report this exception with a reproducible example")
+    }
   }
 }

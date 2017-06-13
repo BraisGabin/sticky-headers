@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun getSectionId(position: Int) = (position / 2).toLong()
 
+    override fun getHeaderPosition(sectionId: Long) = (sectionId * 2).toInt()
+
     class ViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
       fun bind(s: String) {
         val view = v.findViewById(R.id.text1)
