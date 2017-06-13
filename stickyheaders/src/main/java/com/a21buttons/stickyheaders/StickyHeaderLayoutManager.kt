@@ -22,7 +22,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
     while (top < totalHeight && i < itemCount) {
       val view = getView(recycler, i)
-      addViewToBottom(view, top)
+      addMeasureLayoutToBottom(view, top)
       top += view.height
       i++
     }
@@ -56,7 +56,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         if (scrolled > dy && topPosition > 0) {
           topPosition--
           topView = getView(recycler, topPosition)
-          addViewToTop(topView, 0)
+          addMeasureLayoutToTop(topView, 0)
         } else if (scroll == 0) {
           break
         }
@@ -76,7 +76,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         if (scrolled < dy && bottomPosition + 1 < itemCount) {
           bottomPosition++
           bottomView = getView(recycler, bottomPosition)
-          addViewToBottom(bottomView, height)
+          addMeasureLayoutToBottom(bottomView, height)
         } else if (scroll == 0) {
           break
         }
@@ -94,17 +94,29 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return getChildAt(childCount - 1 - position)
   }
 
-  private fun addViewToTop(view: View, bottom: Int) {
+  private fun addMeasureLayoutToTop(view: View, bottom: Int) {
     addView(view, 0)
+    measure(view)
+    layoutToTop(view, bottom)
+  }
+
+  private fun addMeasureLayoutToBottom(view: View, top: Int) {
+    addView(view)
+    measure(view)
+    layoutToBottom(view, top)
+  }
+
+  private fun measure(view: View) {
     measureChildWithMargins(view, 0, 0)
+  }
+
+  private fun layoutToTop(view: View, bottom: Int) {
     val width = view.measuredWidth
     val height = view.measuredHeight
     layoutDecorated(view, 0, bottom - height, width, bottom)
   }
 
-  private fun addViewToBottom(view: View, top: Int) {
-    addView(view)
-    measureChildWithMargins(view, 0, 0)
+  private fun layoutToBottom(view: View, top: Int) {
     val width = view.measuredWidth
     val height = view.measuredHeight
     layoutDecorated(view, 0, top, width, top + height)
