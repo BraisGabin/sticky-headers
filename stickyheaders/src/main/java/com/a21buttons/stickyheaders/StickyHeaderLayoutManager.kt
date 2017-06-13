@@ -21,7 +21,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     var i = 0
 
     while (top < totalHeight && i < itemCount) {
-      val view = getView(recycler, i)
+      val view = createView(recycler, i)
       addMeasureLayoutToBottom(view, top)
       top += view.height
       i++
@@ -55,7 +55,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         }
         if (scrolled > dy && topPosition > 0) {
           topPosition--
-          topView = getView(recycler, topPosition)
+          topView = createView(recycler, topPosition)
           addMeasureLayoutToTop(topView, 0)
         } else if (scroll == 0) {
           break
@@ -75,7 +75,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         }
         if (scrolled < dy && bottomPosition + 1 < itemCount) {
           bottomPosition++
-          bottomView = getView(recycler, bottomPosition)
+          bottomView = createView(recycler, bottomPosition)
           addMeasureLayoutToBottom(bottomView, height)
         } else if (scroll == 0) {
           break
@@ -92,6 +92,10 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
   private fun getBottomView(position: Int = 0): View {
     return getChildAt(childCount - 1 - position)
+  }
+
+  private fun createView(recycler: RecyclerView.Recycler, position: Int): View {
+    return recycler.getViewForPosition(position)
   }
 
   private fun addMeasureLayoutToTop(view: View, bottom: Int) {
@@ -120,10 +124,6 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     val width = view.measuredWidth
     val height = view.measuredHeight
     layoutDecorated(view, 0, top, width, top + height)
-  }
-
-  private fun getView(recycler: RecyclerView.Recycler, position: Int): View {
-    return recycler.getViewForPosition(position)
   }
 
   private fun getAdapterPosition(view: View): Int {
