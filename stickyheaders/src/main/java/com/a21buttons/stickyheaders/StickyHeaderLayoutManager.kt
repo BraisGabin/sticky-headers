@@ -1,7 +1,10 @@
 package com.a21buttons.stickyheaders
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 
 import java.lang.Math.max
 import java.lang.Math.min
@@ -130,11 +133,32 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return getLayoutParams(view).viewAdapterPosition
   }
 
-  private fun getLayoutParams(view: View): RecyclerView.LayoutParams {
-    return view.layoutParams!! as RecyclerView.LayoutParams
+  private fun getLayoutParams(view: View): LayoutParams {
+    return view.layoutParams as LayoutParams
   }
 
-  override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
-    return RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+  override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
+    return lp is LayoutParams
+  }
+
+  override fun generateDefaultLayoutParams(): LayoutParams {
+    return LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+  }
+
+  override fun generateLayoutParams(c: Context, attrs: AttributeSet): LayoutParams {
+    return LayoutParams(c, attrs)
+  }
+
+  override fun generateLayoutParams(lp: ViewGroup.LayoutParams): LayoutParams {
+    return LayoutParams(lp)
+  }
+
+  class LayoutParams : RecyclerView.LayoutParams {
+
+    constructor(lp: ViewGroup.LayoutParams) : super(lp)
+
+    constructor(c: Context, attrs: AttributeSet) : super(c, attrs)
+
+    constructor(width: Int, height: Int) : super(width, height)
   }
 }
