@@ -127,10 +127,10 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   }
 
   private fun getAdapterPosition(view: View): Int {
-    return getViewHolder(view).viewAdapterPosition
+    return getLayoutParams(view).viewAdapterPosition
   }
 
-  private fun getViewHolder(view: View): RecyclerView.LayoutParams {
+  private fun getLayoutParams(view: View): RecyclerView.LayoutParams {
     return view.layoutParams!! as RecyclerView.LayoutParams
   }
 
