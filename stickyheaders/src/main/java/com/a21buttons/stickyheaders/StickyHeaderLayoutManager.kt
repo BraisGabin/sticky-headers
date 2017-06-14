@@ -36,7 +36,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     while (top < totalHeight && i < itemCount) {
       val view = createView(recycler, i, childCount)
       layoutToBottom(view, top)
-      top += view.height
+      top += getDecoratedMeasuredHeight(view)
       i++
     }
   }
@@ -110,7 +110,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       if (isStickyHeader(view)) {
         detachView(view)
         setStickyHeader(view, false)
-        val bottom = getChildAt(0).top
+        val bottom = getDecoratedTop(getChildAt(0))
         if (bottom > 0) {
           attachView(view, 0)
           layoutToTop(view, bottom)
@@ -129,16 +129,16 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     val headerAdapterPosition = stickyHeader.getHeaderPosition(topSectionId)
     if (headerAdapterPosition >= 0) {
       if (headerAdapterPosition == getAdapterPosition(topView)) {
-        if (topView.top < 0 && topView.bottom < height) {
+        if (getDecoratedTop(topView) < 0 && getDecoratedBottom(topView) < height) {
           detachView(topView)
           attachView(topView)
           setStickyHeader(topView, true)
-          layoutToTop(topView, calculateSpace(topView.height, topSectionId))
+          layoutToTop(topView, calculateSpace(getDecoratedMeasuredHeight(topView), topSectionId))
         }
       } else {
         val header = createView(recycler, headerAdapterPosition, childCount)
         setStickyHeader(header, true)
-        layoutToTop(header, calculateSpace(header.height, topSectionId))
+        layoutToTop(header, calculateSpace(getDecoratedMeasuredHeight(header), topSectionId))
       }
     }
   }
@@ -155,7 +155,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     for (i in 0..childCount - 1) {
       val view = getTopView(i)
       if (getSectionId(view) == sectionId) {
-        space = min(view.bottom, headerHeight)
+        space = min(getDecoratedBottom(view), headerHeight)
         if (space >= headerHeight) {
           break
         }
@@ -193,14 +193,14 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   }
 
   private fun layoutToTop(view: View, bottom: Int) {
-    val width = view.measuredWidth
-    val height = view.measuredHeight
+    val width = getDecoratedMeasuredWidth(view)
+    val height = getDecoratedMeasuredHeight(view)
     layoutDecorated(view, 0, bottom - height, width, bottom)
   }
 
   private fun layoutToBottom(view: View, top: Int) {
-    val width = view.measuredWidth
-    val height = view.measuredHeight
+    val width = getDecoratedMeasuredWidth(view)
+    val height = getDecoratedMeasuredHeight(view)
     layoutDecorated(view, 0, top, width, top + height)
   }
 

@@ -17,6 +17,7 @@
       </intent-filter>
     </activity>
     <activity android:name=".Simple" />
+    <activity android:name=".Decoration" />
     <activity android:name=".Remove" />
   </application>
 </manifest>
