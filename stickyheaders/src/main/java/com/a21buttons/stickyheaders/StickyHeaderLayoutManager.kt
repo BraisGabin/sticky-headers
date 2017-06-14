@@ -27,22 +27,27 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
   override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
     removeAndRecycleAllViews(recycler)
+
+    fillFromTop(recycler, 0, 0)
+  }
+
+  override fun canScrollVertically(): Boolean {
+    return true
+  }
+
+  private fun fillFromTop(recycler: RecyclerView.Recycler, initialAdapterPosition: Int, initialTop: Int): Boolean {
     val itemCount = itemCount
-
-    var top = 0
     val totalHeight = height
-    var i = 0
 
+    var top = initialTop
+    var i = initialAdapterPosition
     while (top < totalHeight && i < itemCount) {
       val view = createView(recycler, i, childCount)
       layoutToBottom(view, top)
       top += getDecoratedMeasuredHeight(view)
       i++
     }
-  }
-
-  override fun canScrollVertically(): Boolean {
-    return true
+    return top < totalHeight
   }
 
   override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler, state: RecyclerView.State): Int {
