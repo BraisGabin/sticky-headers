@@ -135,10 +135,11 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     if (headerAdapterPosition >= 0) {
       if (headerAdapterPosition == getAdapterPosition(topView)) {
         if (getDecoratedTop(topView) < 0 && getDecoratedBottom(topView) < height) {
+          val bottom = calculateSpace(getDecoratedMeasuredHeight(topView), topSectionId)
           detachView(topView)
           attachView(topView)
           setStickyHeader(topView, true)
-          layoutToTop(topView, calculateSpace(getDecoratedMeasuredHeight(topView), topSectionId))
+          layoutToTop(topView, bottom)
         }
       } else {
         val header = createView(recycler, headerAdapterPosition, childCount)
