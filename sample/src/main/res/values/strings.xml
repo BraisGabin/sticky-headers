@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">Sticky Headers</string>
+  <string name="simple">Simple</string>
+  <string name="remove">Remove</string>
 </resources>
