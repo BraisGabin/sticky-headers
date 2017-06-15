@@ -21,5 +21,6 @@
     <activity android:name=".Remove" />
     <activity android:name=".Modify" />
     <activity android:name=".Insert" />
+    <activity android:name=".ChangeHeader" />
   </application>
 </manifest>
