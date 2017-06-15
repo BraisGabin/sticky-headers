@@ -20,5 +20,6 @@
     <activity android:name=".Decoration" />
     <activity android:name=".Remove" />
     <activity android:name=".Modify" />
+    <activity android:name=".Insert" />
   </application>
 </manifest>
