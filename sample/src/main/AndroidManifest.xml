@@ -19,5 +19,6 @@
     <activity android:name=".Simple" />
     <activity android:name=".Decoration" />
     <activity android:name=".Remove" />
+    <activity android:name=".Modify" />
   </application>
 </manifest>
