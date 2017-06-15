@@ -263,7 +263,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   }
 
   private fun getSectionId(view: View): Long {
-    return getTag(view).sectionId
+    return getViewHolder(view).sectionId
   }
 
   private fun isStickyHeader(view: View): Boolean {
@@ -278,8 +278,8 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return view.layoutParams as LayoutParams
   }
 
-  private fun getTag(view: View): StickyHeaderData {
-    return view.getTag(R.id.com_a21buttons_stickyheaders_tag) as StickyHeaderData
+  private fun getViewHolder(view: View): StickyHeaderViewHolder {
+    return view.getTag(R.id.com_a21buttons_stickyheaders_holder) as StickyHeaderViewHolder
   }
 
   override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {

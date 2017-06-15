@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.a21buttons.stickyheaders.StickyHeaderAdapter
 import com.a21buttons.stickyheaders.StickyHeaderLayoutManager
+import com.a21buttons.stickyheaders.StickyHeaderViewHolder
 
 class Decoration : AppCompatActivity() {
   companion object {
@@ -34,7 +35,7 @@ class Decoration : AppCompatActivity() {
   class Adapter(val inflater: LayoutInflater) : StickyHeaderAdapter<Adapter.ViewHolder>() {
     override fun getItemCount(): Int = 100
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder2(parent: ViewGroup, viewType: Int): ViewHolder {
       return ViewHolder(inflater.inflate(R.layout.item, parent, false))
     }
 
@@ -46,7 +47,7 @@ class Decoration : AppCompatActivity() {
 
     override fun getHeaderPosition(sectionId: Long) = (sectionId * 2).toInt()
 
-    class ViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
+    class ViewHolder(val v: View) : StickyHeaderViewHolder(v) {
       fun bind(s: String) {
         val view = v.findViewById(R.id.text1)
         if (view is TextView) {

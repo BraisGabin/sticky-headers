@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <item name="com_a21buttons_stickyheaders_tag" type="id" />
+  <item name="com_a21buttons_stickyheaders_holder" type="id" />
 </resources>
