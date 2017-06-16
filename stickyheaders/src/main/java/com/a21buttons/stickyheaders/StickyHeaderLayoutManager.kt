@@ -51,10 +51,10 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
     detachAndScrapAttachedViews(recycler)
 
-    val filledDownTo = fillFromTop(recycler, adapterPosition, top)
+    val (_, filledDownTo) = fillFromTop(recycler, adapterPosition, top)
     if (filledDownTo < height) {
       detachAndScrapAttachedViews(recycler)
-      val filledUpTo = fillFromBottom(recycler, itemCount - 1, height)
+      val (_, filledUpTo) = fillFromBottom(recycler, itemCount - 1, height)
       if (filledUpTo > 0) {
         offsetChildrenVertical(-filledUpTo)
       }
@@ -67,7 +67,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return true
   }
 
-  private fun fillFromTop(recycler: RecyclerView.Recycler, initialAdapterPosition: Int, initialTop: Int): Int {
+  private fun fillFromTop(recycler: RecyclerView.Recycler, initialAdapterPosition: Int, initialTop: Int): FillFrom {
     val itemCount = itemCount
     val totalHeight = height
 
@@ -79,10 +79,10 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       top += getDecoratedMeasuredHeight(view)
       i++
     }
-    return top
+    return FillFrom(max(initialAdapterPosition, i - 1), top)
   }
 
-  private fun fillFromBottom(recycler: RecyclerView.Recycler, initialAdapterPosition: Int, initialBottom: Int): Int {
+  private fun fillFromBottom(recycler: RecyclerView.Recycler, initialAdapterPosition: Int, initialBottom: Int): FillFrom {
     var bottom = initialBottom
     var i = initialAdapterPosition
     while (bottom > 0 && i >= 0) {
@@ -91,8 +91,10 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       bottom -= getDecoratedMeasuredHeight(view)
       i--
     }
-    return bottom
+    return FillFrom(min(initialAdapterPosition, i + 1), bottom)
   }
+
+  data class FillFrom(val adapterPosition: Int, val filledTo: Int)
 
   override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler, state: RecyclerView.State): Int {
     if (childCount == 0 || dy == 0) {
