@@ -13,9 +13,13 @@ import java.lang.Math.min
 class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   private val viewCache = SparseArray<View>()
   private var stickyHeader: HeaderLookup = HeaderLookupPlaceholder
+  private var firstVisibleAdapterPosition: Int = 0
+  private var firstVisibleTop: Int = 0
 
   override fun onAdapterChanged(oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?) {
     removeAllViews()
+    firstVisibleAdapterPosition = 0
+    firstVisibleTop = 0
     if (newAdapter !is StickyHeaderAdapter?) {
       throw IllegalArgumentException("The adapter must extend com.a21buttons.stickyheaders.StickyHeaderAdapter")
     } else if (newAdapter != null) {
@@ -28,35 +32,27 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
     if (itemCount <= 0) {
       removeAndRecycleAllViews(recycler)
+      firstVisibleAdapterPosition = 0
+      firstVisibleTop = 0
       return
     }
 
-    val adapterPosition: Int
-    val top: Int
-    if (childCount <= 0) {
-      adapterPosition = 0
-      top = 0
-    } else {
-      val view = getTopView()
-      val possibleTop = getDecoratedTop(view)
-      if (possibleTop > 0) {
-        val header = getStickyView()
-        adapterPosition = getAdapterPosition(header)
-        top = possibleTop - getDecoratedMeasuredHeight(header)
-      } else {
-        adapterPosition = getAdapterPosition(view)
-        top = possibleTop
-      }
-    }
+    val adapterPosition = firstVisibleAdapterPosition
+    val top = firstVisibleTop
 
     detachAndScrapAttachedViews(recycler)
 
     val (_, filledDownTo) = fillFromTop(recycler, adapterPosition, top)
     if (filledDownTo < height) {
       detachAndScrapAttachedViews(recycler)
-      val (_, filledUpTo) = fillFromBottom(recycler, itemCount - 1, height)
+      val (position, filledUpTo) = fillFromBottom(recycler, itemCount - 1, height)
       if (filledUpTo > 0) {
         offsetChildrenVertical(-filledUpTo)
+        firstVisibleAdapterPosition = 0
+        firstVisibleTop = 0
+      } else {
+        firstVisibleAdapterPosition = position
+        firstVisibleTop = filledUpTo
       }
     }
 
@@ -148,6 +144,9 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         }
       }
     }
+
+    firstVisibleAdapterPosition = getAdapterPosition(topView)
+    firstVisibleTop = getDecoratedTop(topView)
 
     addHeaders(recycler)
     recycleUnusedViews(recycler)
