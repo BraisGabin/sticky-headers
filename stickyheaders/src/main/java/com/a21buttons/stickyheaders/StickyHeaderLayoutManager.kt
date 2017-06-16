@@ -154,6 +154,13 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return scrolled
   }
 
+  override fun scrollToPosition(position: Int) {
+    firstVisibleAdapterPosition = position
+    firstVisibleTop = 0
+
+    requestLayout()
+  }
+
   private fun removeHeaders() {
     for (i in childCount - 1 downTo 0) {
       val view = getChildAt(i)
