@@ -14,9 +14,9 @@ import com.a21buttons.stickyheaders.StickyHeaderAdapter
 import com.a21buttons.stickyheaders.StickyHeaderLayoutManager
 import com.a21buttons.stickyheaders.StickyHeaderViewHolder
 
-class Modify : AppCompatActivity() {
+class DataSetChanged : AppCompatActivity() {
   companion object {
-    fun getCallingIntent(context: Context) = Intent(context, Modify::class.java)
+    fun getCallingIntent(context: Context) = Intent(context, DataSetChanged::class.java)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +49,7 @@ class Modify : AppCompatActivity() {
     fun update() {
       list = list.map { it + 1 }
           .toMutableList()
-      notifyItemRangeChanged(0, list.count())
+      notifyDataSetChanged()
     }
 
     class ViewHolder(val v: View) : StickyHeaderViewHolder(v) {
@@ -59,7 +59,7 @@ class Modify : AppCompatActivity() {
           view.text = s
         }
         v.setOnClickListener {
-          adapter.update()
+            adapter.update()
         }
       }
     }

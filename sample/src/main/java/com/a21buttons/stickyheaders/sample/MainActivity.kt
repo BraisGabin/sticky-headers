@@ -15,5 +15,6 @@ class MainActivity : AppCompatActivity() {
     findViewById(R.id.button4).setOnClickListener({ startActivity(Modify.getCallingIntent(this)) })
     findViewById(R.id.button5).setOnClickListener({ startActivity(Insert.getCallingIntent(this)) })
     findViewById(R.id.button6).setOnClickListener({ startActivity(ChangeHeader.getCallingIntent(this)) })
+    findViewById(R.id.button7).setOnClickListener({ startActivity(DataSetChanged.getCallingIntent(this)) })
   }
 }

@@ -22,5 +22,6 @@
     <activity android:name=".Modify" />
     <activity android:name=".Insert" />
     <activity android:name=".ChangeHeader" />
+    <activity android:name=".DataSetChanged" />
   </application>
 </manifest>
