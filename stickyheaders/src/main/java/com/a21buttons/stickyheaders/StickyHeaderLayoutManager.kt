@@ -2,6 +2,7 @@ package com.a21buttons.stickyheaders
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.NO_POSITION
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View
@@ -159,6 +160,20 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     firstVisibleTop = 0
 
     requestLayout()
+  }
+
+  fun findFirstVisibleItemPosition(): Int {
+    return if (childCount <= 0) NO_POSITION else firstVisibleAdapterPosition
+  }
+
+  fun findLastVisibleItemPosition(): Int {
+    for (i in childCount - 1 downTo 0) {
+      val view = getChildAt(i)
+      if (!isStickyHeader(view)) {
+        return firstVisibleAdapterPosition + i
+      }
+    }
+    return NO_POSITION
   }
 
   private fun removeHeaders() {
