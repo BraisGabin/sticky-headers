@@ -1,6 +1,8 @@
 package com.a21buttons.stickyheaders
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.NO_POSITION
 import android.util.AttributeSet
@@ -16,6 +18,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   private var stickyHeader: HeaderLookup = HeaderLookupPlaceholder
   private var firstVisibleAdapterPosition: Int = 0
   private var firstVisibleTop: Int = 0
+  private var pendingSavedState: SavedState? = null
 
   override fun onAdapterChanged(oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?) {
     removeAllViews()
@@ -38,6 +41,12 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       return
     }
 
+    val pending = pendingSavedState
+    if (pending != null) {
+      firstVisibleAdapterPosition = pending.firstVisibleAdapterPosition
+      firstVisibleTop = pending.firstVisibleTop
+    }
+
     val adapterPosition = firstVisibleAdapterPosition
     val top = firstVisibleTop
 
@@ -58,6 +67,10 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     }
 
     addHeaders(recycler)
+  }
+
+  override fun onLayoutCompleted(state: RecyclerView.State) {
+    pendingSavedState = null
   }
 
   override fun canScrollVertically(): Boolean {
@@ -159,6 +172,16 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     firstVisibleAdapterPosition = position
     firstVisibleTop = 0
 
+    pendingSavedState = null
+    requestLayout()
+  }
+
+  override fun onSaveInstanceState(): Parcelable {
+    return pendingSavedState ?: SavedState(firstVisibleAdapterPosition, firstVisibleTop)
+  }
+
+  override fun onRestoreInstanceState(state: Parcelable?) {
+    pendingSavedState = state as SavedState?
     requestLayout()
   }
 
@@ -319,6 +342,27 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
   override fun generateLayoutParams(lp: ViewGroup.LayoutParams): LayoutParams {
     return LayoutParams(lp)
+  }
+
+  data class SavedState(val firstVisibleAdapterPosition: Int, val firstVisibleTop: Int) : Parcelable {
+    companion object {
+      @JvmField val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
+        override fun createFromParcel(source: Parcel): SavedState = SavedState(source)
+        override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
+      }
+    }
+
+    constructor(source: Parcel) : this(
+        source.readInt(),
+        source.readInt()
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+      dest.writeInt(firstVisibleAdapterPosition)
+      dest.writeInt(firstVisibleTop)
+    }
   }
 
   class LayoutParams : RecyclerView.LayoutParams {
