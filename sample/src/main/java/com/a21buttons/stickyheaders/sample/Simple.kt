@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.a21buttons.stickyheaders.SimpleStickyHeaderAdapter
 import com.a21buttons.stickyheaders.StickyHeaderAdapter
 import com.a21buttons.stickyheaders.StickyHeaderLayoutManager
 import com.a21buttons.stickyheaders.StickyHeaderViewHolder
@@ -28,8 +29,14 @@ class Simple : AppCompatActivity() {
     recyclerView.adapter = Adapter(layoutInflater)
   }
 
-  class Adapter(val inflater: LayoutInflater) : StickyHeaderAdapter<Adapter.ViewHolder>() {
-    override fun getItemCount(): Int = 100
+  class Adapter(val inflater: LayoutInflater) : SimpleStickyHeaderAdapter<Adapter.ViewHolder>() {
+    override fun getSectionCount() = 50
+
+    override fun getSectionItemCount(sectionId: Long): Int {
+      return (sectionId.toInt() % 8) + 2
+    }
+
+    override fun hasHeader(sectionId: Long) = true
 
     override fun onCreateViewHolder2(parent: ViewGroup, viewType: Int): ViewHolder {
       return ViewHolder(inflater.inflate(R.layout.item, parent, false))
@@ -38,10 +45,6 @@ class Simple : AppCompatActivity() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int, sectionId: Long) {
       holder.bind("Position $position\tSection $sectionId")
     }
-
-    override fun getSectionId(position: Int) = (position / 2).toLong()
-
-    override fun getHeaderPosition(sectionId: Long) = (sectionId * 2).toInt()
 
     class ViewHolder(val v: View) : StickyHeaderViewHolder(v) {
       fun bind(s: String) {
