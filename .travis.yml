@@ -16,6 +16,9 @@ before_script:
 script:
   ./gradlew test connectedAndroidTest
 
+after_success:
+- .buildscript/deploy_snapshot.sh
+
 sudo: false
 
 cache:
