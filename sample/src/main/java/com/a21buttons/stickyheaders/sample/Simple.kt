@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.a21buttons.stickyheaders.SimpleStickyHeaderAdapter
-import com.a21buttons.stickyheaders.StickyHeaderAdapter
 import com.a21buttons.stickyheaders.StickyHeaderLayoutManager
 import com.a21buttons.stickyheaders.StickyHeaderViewHolder
 
