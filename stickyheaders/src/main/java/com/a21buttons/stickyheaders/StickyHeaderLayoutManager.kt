@@ -270,10 +270,6 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     return getChildAt(childCount - 1 - position)
   }
 
-  private fun getStickyView(): View {
-    return getChildAt(childCount - 1)
-  }
-
   /**
    *
    * @param childPosition [0..childCount]
