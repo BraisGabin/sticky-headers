@@ -26,3 +26,5 @@ dependencies {
   compileOnly "com.android.support:recyclerview-v7:$support_version"
   testImplementation 'junit:junit:4.12'
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
