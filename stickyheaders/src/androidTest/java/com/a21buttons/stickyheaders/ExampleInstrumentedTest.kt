@@ -20,6 +20,6 @@ class ExampleInstrumentedTest {
   fun useAppContext() {
     // Context of the app under test.
     val appContext = InstrumentationRegistry.getTargetContext()
-    assertEquals("com.a21buttons.stickyheaders", appContext.packageName)
+    assertEquals("com.a21buttons.stickyheaders.test", appContext.packageName)
   }
 }
