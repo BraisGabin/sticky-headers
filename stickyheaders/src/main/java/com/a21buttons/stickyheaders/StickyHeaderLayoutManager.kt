@@ -190,6 +190,9 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   }
 
   fun findLastVisibleItemPosition(): Int {
+    if (childCount <= 0) {
+      return NO_POSITION
+    }
     val needOffset = getDecoratedTop(getChildAt(0)) > 0
     var offset = 0
     for (i in childCount - 1 downTo 0) {
