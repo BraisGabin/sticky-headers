@@ -145,7 +145,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
         val scroll = min(max(bottom - height, 0), dy - scrolled)
         offsetChildrenVertical(-scroll)
         scrolled += scroll
-        while (getDecoratedBottom(topView) < 0) {
+        while (getDecoratedBottom(topView) <= 0) {
           removeAndRecycleView(topView, recycler)
           topView = getTopView()
         }
