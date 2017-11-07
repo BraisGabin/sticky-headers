@@ -1,8 +1,10 @@
 package com.a21buttons.stickyheaders
 
 import android.content.Context
+import android.graphics.PointF
 import android.os.Parcel
 import android.os.Parcelable
+import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.NO_POSITION
 import android.util.AttributeSet
@@ -13,7 +15,7 @@ import android.view.ViewGroup
 import java.lang.Math.max
 import java.lang.Math.min
 
-class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
+class StickyHeaderLayoutManager : RecyclerView.LayoutManager(), RecyclerView.SmoothScroller.ScrollVectorProvider {
   private val viewCache = SparseArray<View>()
   private var stickyHeader: HeaderLookup = HeaderLookupPlaceholder
   private var firstVisibleAdapterPosition: Int = 0
@@ -174,6 +176,58 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
     pendingSavedState = null
     requestLayout()
+  }
+
+  // https://github.com/ShamylZakariya/StickyHeaders/blob/master/stickyheaders/src/main/java/org/zakariya/stickyheaders/StickyHeaderLayoutManager.java
+  override fun smoothScrollToPosition(recyclerView: RecyclerView, state: RecyclerView.State, position: Int) {
+    if (position < 0 || position > itemCount) {
+      throw IndexOutOfBoundsException("adapter position out of range")
+    }
+
+    pendingSavedState = null
+
+    // see: https://blog.stylingandroid.com/scrolling-recyclerview-part-3/
+    val firstVisibleChild = recyclerView.getChildAt(0)
+    val itemHeight = getEstimatedItemHeightForSmoothScroll(recyclerView)
+    val currentPosition = recyclerView.getChildAdapterPosition(firstVisibleChild)
+    var distanceInPixels = Math.abs((currentPosition - position) * itemHeight)
+    if (distanceInPixels == 0) {
+      distanceInPixels = Math.abs(firstVisibleChild.y).toInt()
+    }
+
+    val context = recyclerView.context
+    val scroller = SmoothScroller(context, distanceInPixels)
+    scroller.targetPosition = position
+    startSmoothScroll(scroller)
+  }
+
+  private fun getEstimatedItemHeightForSmoothScroll(recyclerView: RecyclerView): Int {
+    var stickyHeight = 0
+    var height = 0
+    var i = 0
+    val n = recyclerView.childCount
+    while (i < n) {
+      val childAt = recyclerView.getChildAt(i)
+      if (isStickyHeader(childAt)) {
+        stickyHeight = Math.max(getDecoratedMeasuredHeight(childAt), stickyHeight)
+      } else {
+        height = Math.max(getDecoratedMeasuredHeight(childAt), height)
+      }
+      i++
+    }
+    return height + stickyHeight
+  }
+
+  /**
+   * @see android.support.v7.widget.LinearLayoutManager.computeScrollVectorForPosition(int)
+   */
+  override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
+    if (childCount == 0) {
+      return null
+    }
+    val firstChildPos = getPosition(getChildAt(0))
+    val direction = if (targetPosition < firstChildPos) -1 else 1
+    return PointF(0f, direction.toFloat())
   }
 
   override fun onSaveInstanceState(): Parcelable {
@@ -387,4 +441,13 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       throw IllegalStateException("Please report this exception with a reproducible example")
     }
   }
+
+  private inner class SmoothScroller internal constructor(context: Context, private val distanceInPixels: Int) : LinearSmoothScroller(context) {
+
+    override fun calculateDyToMakeVisible(view: View, snapPreference: Int): Int {
+      return distanceInPixels
+    }
+
+  }
+
 }
