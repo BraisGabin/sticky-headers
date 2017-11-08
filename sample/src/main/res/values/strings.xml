@@ -7,4 +7,5 @@
   <string name="insert">Insert</string>
   <string name="change_header">Change header</string>
   <string name="data_set_changed">Data set changed</string>
+  <string name="smooth_scroll">Smooth scroll</string>
 </resources>

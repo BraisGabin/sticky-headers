@@ -2,6 +2,7 @@ package com.a21buttons.stickyheaders.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.a21buttons.stickyheaders.sample.smooth.SmoothScrollActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,5 +17,6 @@ class MainActivity : AppCompatActivity() {
     findViewById(R.id.button5).setOnClickListener({ startActivity(Insert.getCallingIntent(this)) })
     findViewById(R.id.button6).setOnClickListener({ startActivity(ChangeHeader.getCallingIntent(this)) })
     findViewById(R.id.button7).setOnClickListener({ startActivity(DataSetChanged.getCallingIntent(this)) })
+    findViewById(R.id.button8).setOnClickListener({ startActivity(SmoothScrollActivity.getCallingIntent(this)) })
   }
 }

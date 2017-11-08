@@ -23,5 +23,6 @@
     <activity android:name=".Insert" />
     <activity android:name=".ChangeHeader" />
     <activity android:name=".DataSetChanged" />
+    <activity android:name=".smooth.SmoothScrollActivity" />
   </application>
 </manifest>
