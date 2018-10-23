@@ -72,7 +72,7 @@ abstract class SimpleStickyHeaderAdapter<VH : StickyHeaderViewHolder> : StickyHe
       simpleAdapter.sectionList = null
     }
 
-    override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any) {
+    override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
       simpleAdapter.sectionList = null
     }
 

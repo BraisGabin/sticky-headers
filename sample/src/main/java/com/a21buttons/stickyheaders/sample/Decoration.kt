@@ -49,7 +49,7 @@ class Decoration : AppCompatActivity() {
 
     class ViewHolder(val v: View) : StickyHeaderViewHolder(v) {
       fun bind(s: String) {
-        val view = v.findViewById(R.id.text1)
+        val view: View = v.findViewById(R.id.text1)
         if (view is TextView) {
           view.text = s
         }
