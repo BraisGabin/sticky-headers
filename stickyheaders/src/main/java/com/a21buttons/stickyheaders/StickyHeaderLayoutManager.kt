@@ -193,10 +193,10 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
     if (childCount <= 0) {
       return NO_POSITION
     }
-    val needOffset = getDecoratedTop(getChildAt(0)) > 0
+    val needOffset = getDecoratedTop(getChildAt(0)!!) > 0
     var offset = 0
     for (i in childCount - 1 downTo 0) {
-      val view = getChildAt(i)
+      val view = getChildAt(i)!!
       if (!isStickyHeader(view)) {
         return firstVisibleAdapterPosition + i + offset
       } else if (needOffset) {
@@ -208,11 +208,11 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
 
   private fun removeHeaders() {
     for (i in childCount - 1 downTo 0) {
-      val view = getChildAt(i)
+      val view = getChildAt(i)!!
       if (isStickyHeader(view)) {
         detachView(view)
         setStickyHeader(view, false)
-        val bottom = getDecoratedTop(getChildAt(0))
+        val bottom = getDecoratedTop(getChildAt(0)!!)
         if (bottom > 0) {
           attachView(view, 0)
           layoutToTop(view, bottom)
@@ -270,11 +270,11 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   }
 
   private fun getTopView(position: Int = 0): View {
-    return getChildAt(position)
+    return getChildAt(position)!!
   }
 
   private fun getBottomView(position: Int = 0): View {
-    return getChildAt(childCount - 1 - position)
+    return getChildAt(childCount - 1 - position)!!
   }
 
   /**
@@ -287,7 +287,7 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
       viewCache.delete(adapterPosition)
       attachView(view, childPosition)
     } else {
-      view = recycler.getViewForPosition(adapterPosition)!!
+      view = recycler.getViewForPosition(adapterPosition)
       addView(view, childPosition)
       measureChildWithMargins(view, 0, 0)
     }
