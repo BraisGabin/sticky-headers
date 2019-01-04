@@ -21,16 +21,13 @@ class StickyHeaderLayoutManager : RecyclerView.LayoutManager() {
   private var pendingSavedState: SavedState? = null
 
   override fun onAdapterChanged(oldAdapter: RecyclerView.Adapter<*>?, newAdapter: RecyclerView.Adapter<*>?) {
+    if (newAdapter !is StickyHeaderAdapter?) {
+      throw IllegalArgumentException("The adapter must extend com.a21buttons.stickyheaders.StickyHeaderAdapter")
+    }
     removeAllViews()
     firstVisibleAdapterPosition = 0
     firstVisibleTop = 0
-    if (newAdapter !is StickyHeaderAdapter?) {
-      throw IllegalArgumentException("The adapter must extend com.a21buttons.stickyheaders.StickyHeaderAdapter")
-    } else if (newAdapter != null) {
-      stickyHeader = newAdapter
-    } else {
-      stickyHeader = HeaderLookupPlaceholder
-    }
+    stickyHeader = newAdapter ?: HeaderLookupPlaceholder
   }
 
   override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
