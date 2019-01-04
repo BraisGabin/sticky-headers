@@ -1,6 +1,6 @@
 package com.a21buttons.stickyheaders
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 
 abstract class StickyHeaderAdapter<VH : StickyHeaderViewHolder> : RecyclerView.Adapter<VH>(), StickyHeaderLayoutManager.HeaderLookup {

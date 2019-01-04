@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +26,7 @@ class Decoration : AppCompatActivity() {
 
     val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources.displayMetrics)
 
-    val recyclerView: RecyclerView = findViewById(R.id.recyclerView) as RecyclerView
+    val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
     recyclerView.layoutManager = StickyHeaderLayoutManager()
     recyclerView.addItemDecoration(VerticalSpaceItemDecoration(px.toInt()))
     recyclerView.adapter = Adapter(layoutInflater)

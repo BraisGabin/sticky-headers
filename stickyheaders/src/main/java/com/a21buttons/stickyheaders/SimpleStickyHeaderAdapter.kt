@@ -1,6 +1,6 @@
 package com.a21buttons.stickyheaders
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 abstract class SimpleStickyHeaderAdapter<VH : StickyHeaderViewHolder> : StickyHeaderAdapter<VH>() {
   private var sectionList: List<Int>? = null

@@ -3,8 +3,8 @@ package com.a21buttons.stickyheaders
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.NO_POSITION
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.View

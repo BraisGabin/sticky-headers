@@ -6,7 +6,7 @@ android {
   defaultConfig {
     minSdkVersion 14
 
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
   buildTypes {
     release {
@@ -18,11 +18,9 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
-    exclude group: 'com.android.support', module: 'support-annotations'
-  })
+
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-  compileOnly "com.android.support:recyclerview-v7:$support_version"
+  compileOnly 'androidx.recyclerview:recyclerview:1.0.0'
   testImplementation 'junit:junit:4.12'
 }
 

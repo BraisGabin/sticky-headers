@@ -3,8 +3,8 @@ package com.a21buttons.stickyheaders.sample
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +22,7 @@ class Modify : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.recycler_view)
 
-    val recyclerView: RecyclerView = findViewById(R.id.recyclerView) as RecyclerView
+    val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
 
     recyclerView.layoutManager = StickyHeaderLayoutManager()
     recyclerView.adapter = Adapter(layoutInflater)
